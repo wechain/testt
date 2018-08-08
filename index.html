@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>UNDER_STEEMED</title>
+
+    <meta name="description" content="Curated list of Steemit under-valued posts"/>
+    <meta name="keywords" content="steemit, under value, curation, tool, voting power, stats, curate post"/>
+
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
+
+    <!--[if lt IE 9]>
+    <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="errors">Connection error</div>
+
+    <div id="account-container"></div>
+    <script id="account-template" type="text/x-handlebars-template">
+      <h1>
+        <a href="https://steemit.com/@{{name}}" target="_blank">@{{name}}</a>
+        <small>(VP: {{voting_power}}%)</small>
+        <button id="change-user" class="button small">Change</button>
+      </h1>
+    </script>
+
+    <form id="tag-form">
+      <input type="text" id="tag-input" />
+      <button id="add-tag" class="button">Add Tag</button>
+    </form>
+    <div class="tags" id="tags-container"></div>
+
+    <form id="option-form" class="option-form">
+      <label>
+        created before
+        <span class="select-container">
+          <select id="option-created" class="option-select">
+            <option value="0">0 minutes ago</option>
+            <option value="1">1 minute ago</option>
+            <option value="15">15 minutes ago</option>
+            <option value="30" selected>30 minutes ago</option>
+            <option value="1440">1 day ago</option>
+            <option value="4320">3 days ago</option>
+            <option value="8640">6 days ago</option>
+          </select>
+        </span>
+        <span class="spacer">&middot;</span>
+      </label>
+      <label>
+        at least
+        <span class="select-container">
+          <select id="option-votes" class="option-select">
+            <option value="0" selected>0 votes</option>
+            <option value="2">2 votes</option>
+            <option value="5">5 votes</option>
+            <option value="10">10 votes</option>
+            <option value="15">15 votes</option>
+            <option value="20">20 votes</option>
+          </select>
+        </span>
+        <span class="spacer">&middot;</span>
+      </label>
+      <label>
+        values under
+        <span class="select-container">
+          <select id="option-value" class="option-select">
+            <option value="1">1 SBD</option>
+            <option value="3">3 SBD</option>
+            <option value="5" selected>5 SBD</option>
+            <option value="10">10 SBD</option>
+            <option value="10">100 SBD</option>
+          </select>
+        </span>
+        <span class="spacer">&middot;</span>
+      </label>
+      <label>
+        over
+        <span class="select-container">
+          <select id="option-length" class="option-select">
+            <option value="100">100 characters</option>
+            <option value="500" selected>500 characters</option>
+            <option value="1000">1,000 characters</option>
+          </select>
+        </span>
+        long
+      </label>
+    </form>
+
+    <script id="tag-template" type="text/x-handlebars-template">
+      <div class="tag-button" data-tag="{{tag}}">
+        <a class="tag-link" href="#{{tag}}">{{tag}}</a>
+        <span class="remove" data-tag="{{tag}}">&times;</span>
+      </div>
+    </script>
+
+    <div class="grey" id="feed-count"></div>
+    <table id="feed-container"></table>
+    <script id="feed-template" type="text/x-handlebars-template"><tr>
+  <td><img src="{{image_url}}" width="200" /></td>
+  <td>
+    <h3><a href="https://steemit.com/@{{author}}/{{permlink}}" target="_blank">{{title}}</a></h3>
+    <h4>
+      <a href="https://steemit.com/@{{author}}" target="_blank">@{{author}}</a> · {{created}}<br>
+      <em>{{net_votes}} votes · ${{pending_payout_value}} (${{per_vote}} per vote)</em>
+    </h4>
+    <br>
+    {{body_trimed}}...
+  </td>
+</tr></script>
+
+    <footer>
+      <hr/>
+      <center>
+        <p>Do you like it? Buy me a beer to support this project ;)</p>
+        <a href="https://steemit.com/@tabris" target="_blank"><img src="./img/follow-btn@2x.png" alt="Follow @tabris" width="186" height="36" /></a>
+      </center>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.min.js" integrity="sha256-0JaDbGZRXlzkFbV8Xi8ZhH/zZ6QQM0Y3dCkYZ7JYq34=" crossorigin="anonymous"></script>
+    <script src="./js/steem.min.js"></script>
+    <script src="./js/moment.min.js"></script>
+    <script src="./js/tag-storage.js"></script>
+    <script src="./js/remove-md.js"></script>
+    <script src="./js/account.js"></script>
+    <script src="./js/feed-filter.js"></script>
+    <script src="./js/tag-form.js"></script>
+    <script>
+      Account.bind();
+      FeedFilter.bind();
+      TagForm.bind();
+      TagForm.fetchCurrentTag();
+    </script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-102510523-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
+
